@@ -1,1 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Account | Northbridge Bank</title>
+<style>
+  :root {
+    --nb-navy: #0b2545;
+    --nb-navy-soft: #13335c;
+    --nb-teal: #0f9b8e;
+    --nb-gold: #e0a33e;
+    --nb-bg: #f4f6f9;
+    --nb-card: #ffffff;
+    --nb-line: #dfe4ec;
+    --nb-text: #1c2533;
+    --nb-muted: #6b7687;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--nb-bg);
+    color: var(--nb-text);
+  }
+  a { color: var(--nb-teal); }
 
+  /* Header */
+  header.nb-header {
+    background: var(--nb-navy);
+    color: #fff;
+  }
+  .nb-header-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nb-logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; letter-spacing: .3px; }
+  .nb-mark {
+    width: 32px; height: 32px; border-radius: 6px;
+    background: linear-gradient(135deg, var(--nb-teal), var(--nb-gold));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: var(--nb-navy);
+  }
+  nav.nb-nav { background: var(--nb-navy-soft); }
+  .nb-nav-inner { max-width: 1080px; margin: 0 auto; padding: 0 24px; display: flex; gap: 4px; }
+  .nb-nav-inner a {
+    color: #cdd8e8; text-decoration: none; padding: 12px 14px; font-size: 14px;
+    border-bottom: 3px solid transparent;
+  }
+  .nb-nav-inner a.active { color: #fff; border-bottom-color: var(--nb-gold); font-weight: 600; }
+  .nb-user { font-size: 14px; color: #cdd8e8; }
+  .nb-user strong { color: #fff; }
+
+  /* Layout */
+  main { max-width: 1080px; margin: 0 auto; padding: 28px 24px 56px; }
+  .nb-page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  h1 { font-size: 26px; margin: 0 0 4px; color: var(--nb-navy); }
+  .nb-sub { color: var(--nb-muted); font-size: 14px; margin: 0; }
+
+  .nb-card {
+    background: var(--nb-card);
+    border: 1px solid var(--nb-line);
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(11,37,69,.05);
+    margin-bottom: 22px;
+  }
+  .nb-card-head {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--nb-line);
+    font-size: 15px; font-weight: 700; color: var(--nb-navy);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nb-card-body { padding: 18px 20px; }
+
+  /* Buttons */
+  .nb-btn {
+    display: inline-block; cursor: pointer; text-decoration: none;
+    font-size: 14px; font-weight: 600; padding: 11px 18px;
+    border-radius: 6px; border: 1px solid transparent;
+  }
+  .nb-btn-primary { background: var(--nb-teal); color: #fff; }
+  .nb-btn-primary:hover { background: #0c8378; }
+  .nb-btn-ghost { background: transparent; color: var(--nb-navy); border-color: var(--nb-line); }
+
+  /* Accounts table */
+  table.nb-accounts { width: 100%; border-collapse: collapse; font-size: 14px; }
+  table.nb-accounts th {
+    text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .6px;
+    color: var(--nb-muted); padding: 10px 12px; border-bottom: 1px solid var(--nb-line);
+  }
+  table.nb-accounts td { padding: 14px 12px; border-bottom: 1px solid #eef1f6; vertical-align: middle; }
+  table.nb-accounts tr:last-child td { border-bottom: none; }
+  .nb-acct-name { font-weight: 600; color: var(--nb-navy); display: block; }
+  .nb-acct-num { color: var(--nb-muted); font-size: 13px; }
+  .nb-amount { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .nb-amount.neg { color: #b4423a; }
+  .nb-pill {
+    display: inline-block; font-size: 12px; font-weight: 600; padding: 3px 9px;
+    border-radius: 999px; background: #e6f5f3; color: #0c6b62;
+  }
+  .nb-pill.warn { background: #fdf2dd; color: #8a6113; }
+
+  /* Profile detail grid */
+  .nb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px 28px; }
+  .nb-field label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--nb-muted); margin-bottom: 5px; }
+  .nb-field .nb-value { font-size: 15px; font-weight: 500; }
+
+  /* The value that cobrowse masking targets */
+  .cobrowse-masked { font-variant-numeric: tabular-nums; letter-spacing: .5px; }
+
+  .nb-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 22px; }
+  .nb-stat { background: #fff; border: 1px solid var(--nb-line); border-left: 4px solid var(--nb-teal); border-radius: 8px; padding: 16px 18px; }
+  .nb-stat span { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .6px; color: var(--nb-muted); }
+  .nb-stat strong { font-size: 22px; color: var(--nb-navy); }
+
+  footer.nb-footer { background: var(--nb-navy); color: #9fb0c7; font-size: 12px; margin-top: 40px; }
+  .nb-footer-inner { max-width: 1080px; margin: 0 auto; padding: 22px 24px; }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+  (function (g, e, n, es, ys) {
+    g['_genesysJs'] = e;
+    g[e] = g[e] || function () {
+      (g[e].q = g[e].q || []).push(arguments)
+    };
+    g[e].t = 1 * new Date();
+    g[e].c = es;
+    ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
+  })(window, 'Genesys', 'https://apps.inindca.com/genesys-bootstrap/genesys.min.js', {
+    environment: 'dev',
+    deploymentId: '5a7bff5e-693a-40da-a4c1-861e39cd4e9b'
+  });
+</script>
+  
+</head>
+<body>
+
+<header class="nb-header">
+  <div class="nb-header-inner">
+    <div class="nb-logo"><span class="nb-mark">N</span> Northbridge Bank</div>
+    <div class="nb-user">Signed in as <strong>Alex Morgan</strong> &nbsp;|&nbsp; <a href="#">Sign out</a></div>
+  </div>
+</header>
+
+<nav class="nb-nav">
+  <div class="nb-nav-inner">
+    <a href="#" class="active">My Account</a>
+    <a href="#">Transfers</a>
+    <a href="#">Bill Pay</a>
+    <a href="#">Statements</a>
+    <a href="#">Support</a>
+  </div>
+</nav>
+
+<main>
+  <div class="nb-page-head">
+    <div>
+      <h1>My Account</h1>
+      <p class="nb-sub">Last sign in: October 6, 2026 at 4:12 PM ET</p>
+    </div>
+    <!-- Replace YOUR_PAGE_2_URL_HERE with the URL where you host credit-application.html -->
+    <a class="nb-btn nb-btn-primary" href="YOUR_PAGE_2_URL_HERE">Open new credit line</a>
+  </div>
+
+  <div class="nb-summary">
+    <div class="nb-stat"><span>Total deposits</span><strong>$42,118.65</strong></div>
+    <div class="nb-stat"><span>Total credit balance</span><strong>$3,247.19</strong></div>
+    <div class="nb-stat"><span>Available credit</span><strong>$11,752.81</strong></div>
+  </div>
+
+  <section class="nb-card">
+    <div class="nb-card-head">
+      My Accounts
+      <a href="#" style="font-size:13px;font-weight:600;">Account services</a>
+    </div>
+    <div class="nb-card-body" style="padding:6px 8px;">
+      <table class="nb-accounts">
+        <thead>
+          <tr>
+            <th>Account</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th style="text-align:right;">Available</th>
+            <th style="text-align:right;">Current balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="nb-acct-name">Everyday Checking</span><span class="nb-acct-num">****4821</span></td>
+            <td>Checking</td>
+            <td><span class="nb-pill">Active</span></td>
+            <td class="nb-amount">$6,318.44</td>
+            <td class="nb-amount">$6,402.10</td>
+          </tr>
+          <tr>
+            <td><span class="nb-acct-name">Premier Savings</span><span class="nb-acct-num">****9075</span></td>
+            <td>Savings</td>
+            <td><span class="nb-pill">Active</span></td>
+            <td class="nb-amount">$24,716.55</td>
+            <td class="nb-amount">$24,716.55</td>
+          </tr>
+          <tr>
+            <td><span class="nb-acct-name">Northbridge Rewards Visa</span><span class="nb-acct-num">****3310</span></td>
+            <td>Credit card</td>
+            <td><span class="nb-pill">Active</span></td>
+            <td class="nb-amount">$11,752.81</td>
+            <td class="nb-amount neg">-$3,247.19</td>
+          </tr>
+          <tr>
+            <td><span class="nb-acct-name">Auto Loan</span><span class="nb-acct-num">****7762</span></td>
+            <td>Installment loan</td>
+            <td><span class="nb-pill warn">Payment due</span></td>
+            <td class="nb-amount">n/a</td>
+            <td class="nb-amount neg">-$14,905.00</td>
+          </tr>
+          <tr>
+            <td><span class="nb-acct-name">Certificate of Deposit (24 mo)</span><span class="nb-acct-num">****1188</span></td>
+            <td>CD</td>
+            <td><span class="nb-pill">Matures 03/2027</span></td>
+            <td class="nb-amount">n/a</td>
+            <td class="nb-amount">$11,000.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="nb-card">
+    <div class="nb-card-head">
+      Account Holder Details
+      <a href="#" style="font-size:13px;font-weight:600;">Edit profile</a>
+    </div>
+    <div class="nb-card-body">
+      <div class="nb-grid">
+        <div class="nb-field">
+          <label>Full name</label>
+          <div class="nb-value">Alex R. Morgan</div>
+        </div>
+        <div class="nb-field">
+          <label>Customer ID</label>
+          <div class="nb-value">NB-7741-0093</div>
+        </div>
+        <div class="nb-field">
+          <label>My Social Security Number</label>
+          <div class="nb-value cobrowse-masked">412-88-7390</div>
+        </div>
+        <div class="nb-field">
+          <label>Date of birth</label>
+          <div class="nb-value">May 14, 1984</div>
+        </div>
+        <div class="nb-field">
+          <label>Email</label>
+          <div class="nb-value">alex.morgan@example.com</div>
+        </div>
+        <div class="nb-field">
+          <label>Mobile phone</label>
+          <div class="nb-value">(617) 555-0142</div>
+        </div>
+        <div class="nb-field">
+          <label>Mailing address</label>
+          <div class="nb-value">88 Harbor Street, Apt 5C<br>Boston, MA 02129</div>
+        </div>
+        <div class="nb-field">
+          <label>Member since</label>
+          <div class="nb-value">August 2015</div>
+        </div>
+        <div class="nb-field">
+          <label>Paperless statements</label>
+          <div class="nb-value">Enabled</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="nb-card">
+    <div class="nb-card-head">Recent Activity</div>
+    <div class="nb-card-body" style="padding:6px 8px;">
+      <table class="nb-accounts">
+        <thead>
+          <tr><th>Date</th><th>Description</th><th>Account</th><th style="text-align:right;">Amount</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Oct 6, 2026</td><td>Harborview Grocery</td><td>Everyday Checking ****4821</td><td class="nb-amount neg">-$84.27</td></tr>
+          <tr><td>Oct 5, 2026</td><td>Payroll deposit, Lumen Works Inc.</td><td>Everyday Checking ****4821</td><td class="nb-amount">+$2,940.00</td></tr>
+          <tr><td>Oct 3, 2026</td><td>Rewards Visa payment</td><td>Rewards Visa ****3310</td><td class="nb-amount">+$450.00</td></tr>
+          <tr><td>Oct 1, 2026</td><td>Auto loan payment</td><td>Auto Loan ****7762</td><td class="nb-amount neg">-$389.14</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer class="nb-footer">
+  <div class="nb-footer-inner">
+    Northbridge Bank, Member FDIC. Equal Housing Lender.<br>
+    This is a demonstration page built for testing purposes. All names, numbers, and balances are fictitious.
+  </div>
+</footer>
+
+</body>
+</html>
+Page 2, credit-application.html:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credit Line Application | Northbridge Bank</title>
+<style>
+  :root {
+    --nb-navy: #0b2545;
+    --nb-navy-soft: #13335c;
+    --nb-teal: #0f9b8e;
+    --nb-gold: #e0a33e;
+    --nb-bg: #f4f6f9;
+    --nb-card: #ffffff;
+    --nb-line: #dfe4ec;
+    --nb-text: #1c2533;
+    --nb-muted: #6b7687;
+    --nb-error: #b4423a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--nb-bg);
+    color: var(--nb-text);
+  }
+  a { color: var(--nb-teal); }
+
+  header.nb-header { background: var(--nb-navy); color: #fff; }
+  .nb-header-inner {
+    max-width: 1080px; margin: 0 auto; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nb-logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; letter-spacing: .3px; }
+  .nb-mark {
+    width: 32px; height: 32px; border-radius: 6px;
+    background: linear-gradient(135deg, var(--nb-teal), var(--nb-gold));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: var(--nb-navy);
+  }
+  nav.nb-nav { background: var(--nb-navy-soft); }
+  .nb-nav-inner { max-width: 1080px; margin: 0 auto; padding: 0 24px; display: flex; gap: 4px; }
+  .nb-nav-inner a {
+    color: #cdd8e8; text-decoration: none; padding: 12px 14px; font-size: 14px;
+    border-bottom: 3px solid transparent;
+  }
+  .nb-nav-inner a.active { color: #fff; border-bottom-color: var(--nb-gold); font-weight: 600; }
+  .nb-user { font-size: 14px; color: #cdd8e8; }
+  .nb-user strong { color: #fff; }
+
+  main { max-width: 720px; margin: 0 auto; padding: 28px 24px 56px; }
+  h1 { font-size: 26px; margin: 0 0 4px; color: var(--nb-navy); }
+  .nb-sub { color: var(--nb-muted); font-size: 14px; margin: 0 0 20px; }
+
+  .nb-card {
+    background: var(--nb-card); border: 1px solid var(--nb-line);
+    border-radius: 10px; box-shadow: 0 1px 2px rgba(11,37,69,.05);
+  }
+  .nb-card-head {
+    padding: 14px 22px; border-bottom: 1px solid var(--nb-line);
+    font-size: 15px; font-weight: 700; color: var(--nb-navy);
+  }
+  .nb-card-body { padding: 22px; }
+
+  .nb-field { margin-bottom: 18px; }
+  .nb-field label {
+    display: block; font-size: 13px; font-weight: 600; color: var(--nb-navy); margin-bottom: 6px;
+  }
+  .nb-field input, .nb-field select {
+    width: 100%; padding: 11px 12px; font-size: 15px;
+    font-family: inherit; color: var(--nb-text);
+    background: #fff; border: 1px solid #c6cedb; border-radius: 6px;
+  }
+  .nb-field input:focus, .nb-field select:focus {
+    outline: none; border-color: var(--nb-teal); box-shadow: 0 0 0 3px rgba(15,155,142,.15);
+  }
+  .nb-field input.nb-invalid, .nb-field select.nb-invalid { border-color: var(--nb-error); background: #fdf6f5; }
+  .nb-hint { font-size: 12px; color: var(--nb-muted); margin-top: 5px; }
+
+  /* The input that cobrowse masking targets */
+  .cobrowse-masked { font-variant-numeric: tabular-nums; letter-spacing: .5px; }
+
+  .nb-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+  @media (max-width: 560px) { .nb-row { grid-template-columns: 1fr; } }
+
+  .nb-btn {
+    display: inline-block; cursor: pointer; font-size: 15px; font-weight: 600;
+    padding: 12px 22px; border-radius: 6px; border: 1px solid transparent;
+    font-family: inherit;
+  }
+  .nb-btn-primary { background: var(--nb-teal); color: #fff; }
+  .nb-btn-primary:hover { background: #0c8378; }
+  .nb-btn-ghost { background: transparent; color: var(--nb-navy); border-color: var(--nb-line); text-decoration: none; }
+
+  .nb-actions { display: flex; align-items: center; gap: 12px; padding-top: 6px; }
+
+  .nb-alert {
+    display: none; margin-bottom: 20px; padding: 13px 16px;
+    border-radius: 6px; font-size: 14px;
+    background: #fdf1f0; border: 1px solid #edc4c0; color: #8d2f28;
+  }
+  .nb-alert.show { display: block; }
+
+  .nb-success { text-align: center; padding: 18px 10px 26px; }
+  .nb-success .nb-check {
+    width: 58px; height: 58px; margin: 0 auto 16px; border-radius: 50%;
+    background: #e6f5f3; color: #0c6b62;
+    display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 700;
+  }
+  .nb-success h2 { color: var(--nb-navy); font-size: 21px; margin: 0 0 8px; }
+  .nb-success p { color: var(--nb-muted); font-size: 14px; margin: 0 auto 20px; max-width: 420px; line-height: 1.55; }
+
+  footer.nb-footer { background: var(--nb-navy); color: #9fb0c7; font-size: 12px; margin-top: 40px; }
+  .nb-footer-inner { max-width: 1080px; margin: 0 auto; padding: 22px 24px; }
+</style>
+</head>
+<body>
+
+<header class="nb-header">
+  <div class="nb-header-inner">
+    <div class="nb-logo"><span class="nb-mark">N</span> Northbridge Bank</div>
+    <div class="nb-user">Signed in as <strong>Alex Morgan</strong> &nbsp;|&nbsp; <a href="#">Sign out</a></div>
+  </div>
+</header>
+
+<nav class="nb-nav">
+  <div class="nb-nav-inner">
+    <a href="#">My Account</a>
+    <a href="#">Transfers</a>
+    <a href="#">Bill Pay</a>
+    <a href="#">Statements</a>
+    <a href="#" class="active">Apply</a>
+  </div>
+</nav>
+
+<main>
+  <h1>Credit Line Application</h1>
+  <p class="nb-sub">All fields are required. Submitting this form does not affect your credit score.</p>
+
+  <section class="nb-card">
+    <div class="nb-card-head" id="nb-card-head">Applicant Information</div>
+    <div class="nb-card-body">
+
+      <div class="nb-alert" id="nb-error">Something went wrong. Please review your information and try again.</div>
+
+      <form id="nb-form" novalidate>
+        <div class="nb-field">
+          <label for="fullName">Full legal name</label>
+          <input type="text" id="fullName" name="fullName" autocomplete="off">
+        </div>
+
+        <div class="nb-row">
+          <div class="nb-field">
+            <label for="ssn">Social Security Number</label>
+            <input type="text" id="ssn" name="ssn" class="cobrowse-masked" placeholder="000-00-0000" autocomplete="off">
+          </div>
+          <div class="nb-field">
+            <label for="dob">Date of birth</label>
+            <input type="date" id="dob" name="dob">
+          </div>
+        </div>
+
+        <div class="nb-row">
+          <div class="nb-field">
+            <label for="email">Email address</label>
+            <input type="text" id="email" name="email" autocomplete="off">
+          </div>
+          <div class="nb-field">
+            <label for="phone">Mobile phone</label>
+            <input type="text" id="phone" name="phone" placeholder="(000) 000-0000" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="nb-row">
+          <div class="nb-field">
+            <label for="employment">Employment status</label>
+            <select id="employment" name="employment">
+              <option value="">Select an option</option>
+              <option value="full-time">Employed full time</option>
+              <option value="part-time">Employed part time</option>
+              <option value="self">Self employed</option>
+              <option value="retired">Retired</option>
+              <option value="student">Student</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="nb-field">
+            <label for="income">Gross annual income</label>
+            <input type="text" id="income" name="income" placeholder="$" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="nb-field">
+          <label for="requested">Requested credit limit</label>
+          <input type="text" id="requested" name="requested" placeholder="$" autocomplete="off">
+          <div class="nb-hint">Final limit is determined after review. Requesting an amount does not guarantee approval.</div>
+        </div>
+
+        <div class="nb-actions">
+          <button type="submit" class="nb-btn nb-btn-primary" id="nb-submit">Submit application</button>
+          <a class="nb-btn nb-btn-ghost" href="account.html">Cancel</a>
+        </div>
+      </form>
+
+      <div class="nb-success" id="nb-success" style="display:none;">
+        <div class="nb-check">&#10003;</div>
+        <h2>Your application was submitted</h2>
+        <p>Thank you. We have received your request and will follow up with next steps.</p>
+        <a class="nb-btn nb-btn-ghost" href="account.html">Return to My Account</a>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="nb-footer">
+  <div class="nb-footer-inner">
+    Northbridge Bank, Member FDIC. Equal Housing Lender.<br>
+    This is a demonstration page built for testing purposes. No information entered here is stored or transmitted.
+  </div>
+</footer>
+
+<script>
+  var form    = document.getElementById('nb-form');
+  var alertEl = document.getElementById('nb-error');
+  var success = document.getElementById('nb-success');
+  var head    = document.getElementById('nb-card-head');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // Every field is required. The submit button is never disabled.
+    var fields = form.querySelectorAll('input, select');
+    var missing = false;
+
+    for (var i = 0; i < fields.length; i++) {
+      var f = fields[i];
+      if (f.value.trim() === '') {
+        f.classList.add('nb-invalid');
+        missing = true;
+      } else {
+        f.classList.remove('nb-invalid');
+      }
+    }
+
+    if (missing) {
+      // Deliberately generic: it does not say which field is missing.
+      alertEl.classList.add('show');
+      alertEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    alertEl.classList.remove('show');
+    form.style.display = 'none';
+    head.textContent = 'Application Received';
+    success.style.display = 'block';
+  });
+</script>
+
+</body>
+</html>
